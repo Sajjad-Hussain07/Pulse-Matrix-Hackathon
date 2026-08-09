@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User fitness biometrics and profile details",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "goal": { "type": "string" },
+        "level": { "type": "string" },
+        "age": { "type": "number" },
+        "gender": { "type": "string" },
+        "heightCm": { "type": "number" },
+        "weightKg": { "type": "number" },
+        "activityLevel": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email"]
+    },
+    "HabitLog": {
+      "title": "HabitLog",
+      "description": "Daily habit logs and streak entries for pulse matrix members",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "waterGlasses": { "type": "number" },
+        "stepsCount": { "type": "number" },
+        "sleepHours": { "type": "number" },
+        "workoutDone": { "type": "boolean" }
+      },
+      "required": ["id", "userId", "date"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User profiles collection"
+    },
+    "habits": {
+      "schema": { "$ref": "#/entities/HabitLog" },
+      "description": "Habits tracking collection"
+    }
+  }
+}
