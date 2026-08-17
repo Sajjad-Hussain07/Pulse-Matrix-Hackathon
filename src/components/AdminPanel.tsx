@@ -585,7 +585,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onShowToast }) => {
                             <div className="relative">
                               <img
                                 src={
-                                  usr.avatarUrl ||
+                                  usr?.avatarUrl ||
                                   'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'
                                 }
                                 alt={usr.name}
@@ -714,7 +714,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onShowToast }) => {
                           <td className="p-3 font-bold text-white flex items-center space-x-3">
                             <img
                               src={
-                                usr.avatarUrl ||
+                                usr?.avatarUrl ||
                                 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
                               }
                               alt={usr.name}
@@ -1284,7 +1284,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onShowToast }) => {
             {/* Modal Header */}
             <div className="flex items-center space-x-4 mb-6">
               <img
-                src={selectedUser.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                src={selectedUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
                 alt={selectedUser.name}
                 className="w-16 h-16 rounded-2xl object-cover border-2 border-emerald-500"
                 referrerPolicy="no-referrer"

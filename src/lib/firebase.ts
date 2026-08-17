@@ -1,9 +1,9 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, User, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, getDocFromServer, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
-import firebaseConfig from '../../firebase-applet-config.json';
 import { UserProfile, UserBooking } from '../types';
 
+// Clean configuration object (resolved duplicate declaration conflict)
 const firebaseConfig = {
   apiKey: "AIzaSyD5x0-8Fpz4r6yq2eovTf1Aa79FaMwzQE4",
   authDomain: "pulse-matrix-hackathon.firebaseapp.com",
@@ -63,7 +63,6 @@ export async function testFirebaseConnection(): Promise<boolean> {
       console.warn('Firebase client is offline or project configuration needs verification.');
       return false;
     }
-    // Connection test doc may not exist, which is fine as long as network call reached server
     return true;
   }
 }
@@ -78,19 +77,31 @@ export async function signInWithGoogle(): Promise<User | null> {
   }
 }
 
-export async function signInWithEmail(email: string, pass: string): Promise<User> {
-  const authPromise = signInWithEmailAndPassword(auth, email, pass);
-  const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error('AUTH_TIMEOUT')), 5000)
-  );
-  const result = await Promise.race([authPromise, timeoutPromise]);
-  return result.user;
+export async function signInWithEmail(email: string, pass: string) {
+  try {
+    const authPromise = signInWithEmailAndPassword(auth, email, pass);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('AUTH_TIMEOUT')), 8000)
+    );
+    const result = await Promise.race([authPromise, timeoutPromise]);
+    const user = result.user;
+
+    return {
+      uid: user.uid,
+      id: user.uid,
+      email: user.email || email,
+      displayName: user.displayName || email.split('@')[0],
+    };
+  } catch (err) {
+    console.error("Sign in execution error:", err);
+    throw err;
+  }
 }
 
 export async function signUpWithEmail(email: string, pass: string): Promise<User> {
   const authPromise = createUserWithEmailAndPassword(auth, email, pass);
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error('AUTH_TIMEOUT')), 5000)
+    setTimeout(() => reject(new Error('AUTH_TIMEOUT')), 8000)
   );
   const result = await Promise.race([authPromise, timeoutPromise]);
   return result.user;
@@ -102,9 +113,7 @@ export async function logOutFirebase(): Promise<void> {
 
 export async function saveUserProfileToFirestore(profile: UserProfile): Promise<void> {
   try {
-    const savePromise = setDoc(doc(db, 'users', profile.id), profile, { merge: true });
-    const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000));
-    await Promise.race([savePromise, timeoutPromise]);
+    await setDoc(doc(db, 'users', profile.id), profile, { merge: true });
   } catch (error) {
     console.warn('Firestore user profile save warning:', error);
   }
@@ -112,10 +121,8 @@ export async function saveUserProfileToFirestore(profile: UserProfile): Promise<
 
 export async function getUserProfileFromFirestore(userId: string): Promise<UserProfile | null> {
   try {
-    const fetchPromise = getDoc(doc(db, 'users', userId));
-    const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
-    const snap = await Promise.race([fetchPromise, timeoutPromise]);
-    if (snap && snap.exists()) {
+    const snap = await getDoc(doc(db, 'users', userId));
+    if (snap.exists()) {
       return snap.data() as UserProfile;
     }
     return null;
@@ -127,11 +134,7 @@ export async function getUserProfileFromFirestore(userId: string): Promise<UserP
 
 export async function getAllUsersFromFirestore(): Promise<UserProfile[]> {
   try {
-    const fetchPromise = getDocs(collection(db, 'users'));
-    const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
-    const snap = await Promise.race([fetchPromise, timeoutPromise]);
-    if (!snap) return [];
-    
+    const snap = await getDocs(collection(db, 'users'));
     const users: UserProfile[] = [];
     snap.forEach((docSnap) => {
       if (docSnap.exists()) {
@@ -169,11 +172,7 @@ export async function getUserBookingsFromFirestore(userId: string): Promise<User
 
 export async function getAllBookingsFromFirestore(): Promise<UserBooking[]> {
   try {
-    const fetchPromise = getDocs(collection(db, 'bookings'));
-    const timeoutPromise = new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000));
-    const snap = await Promise.race([fetchPromise, timeoutPromise]);
-    if (!snap) return [];
-
+    const snap = await getDocs(collection(db, 'bookings'));
     const list: UserBooking[] = [];
     snap.forEach((docSnap) => {
       if (docSnap.exists()) {
@@ -204,4 +203,3 @@ export async function cancelBookingInFirestore(bookingId: string): Promise<void>
 }
 
 export default app;
-

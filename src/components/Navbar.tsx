@@ -160,12 +160,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="flex items-center space-x-2 bg-gray-900 hover:bg-gray-800 border border-emerald-500/40 hover:border-neon-green px-3.5 py-1.5 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-[0_0_18px_rgba(16,185,129,0.4)]"
               >
                 <img
-                  src={activeUser.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
-                  alt={activeUser.name}
-                  className="w-6 h-6 rounded-full object-cover border border-emerald-400"
-                  referrerPolicy="no-referrer"
-                />
-                <span className="text-xs font-bold text-white max-w-[110px] truncate">{activeUser.name}</span>
+  src={activeUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
+  alt={activeUser?.name ?? 'User'}
+  className="w-6 h-6 rounded-full object-cover border border-emerald-400"
+  referrerPolicy="no-referrer"
+/>
+                <span className="text-xs font-bold text-white max-w-[110px] truncate">{activeUser?.name}</span>
                 <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-300 ${userDropdownOpen ? 'rotate-180 text-neon-green' : ''}`} />
               </button>
 
@@ -269,13 +269,13 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div className="flex items-center justify-between pb-3 border-b border-gray-800">
               <div className="flex items-center space-x-2">
                 <img
-                  src={activeUser.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
-                  alt={activeUser.name}
+                  src={activeUser?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'}
+                  alt={activeUser?.name || 'Guest'}
                   className="w-8 h-8 rounded-full object-cover border border-emerald-400"
                   referrerPolicy="no-referrer"
                 />
                 <div>
-                  <p className="text-xs font-bold text-white">{activeUser.name}</p>
+                  <p className="text-xs font-bold text-white">{activeUser?.name || 'Guest'}</p>
                   <p className="text-[10px] text-gray-400">{activeUser.goal}</p>
                 </div>
               </div>
